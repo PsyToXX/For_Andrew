@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Подарок</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#0b0b0f;
+    color:white;
+    font-family:Arial,sans-serif;
+    text-align:center;
+}
+
+.subtext{
+    font-size:14px;
+    opacity:0.6;
+    margin-top:10px;
+}
+
+h1{
+    margin-top:40px;
+    letter-spacing:2px;
+}
+
+#timer{
+    font-size:48px;
+    margin-top:20px;
+}
+
+.hidden{
+    display:none;
+}
+
+#giftLink{
+    margin-top:50px;
+    font-size:32px;
+    color:gold;
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+.pointer{
+    width:0;
+    height:0;
+    border-left:22px solid transparent;
+    border-right:22px solid transparent;
+    border-top:45px solid white;
+    margin:20px auto;
+}
+
+#wheelWrapper{
+    width:450px;
+    height:450px;
+    margin:20px auto;
+    position:relative;
+}
+
+#wheel{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    border:10px solid gold;
+    position:relative;
+
+    background:
+    conic-gradient(
+        #ff4444 0deg 36deg,
+        #ffaa00 36deg 72deg,
+        #44ff88 72deg 108deg,
+        #4488ff 108deg 144deg,
+        #ff44aa 144deg 180deg,
+        #ffdd00 180deg 216deg,
+        #00d0ff 216deg 252deg,
+        #aa66ff 252deg 288deg,
+        #66ff66 288deg 324deg,
+        #ff8844 324deg 360deg
+    );
+}
+
+.label{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform-origin:center center;
+    color:white;
+    font-size:13px;
+    font-weight:bold;
+    width:130px;
+    margin-left:-65px;
+    text-align:center;
+}
+
+button{
+    padding:15px 35px;
+    font-size:20px;
+    cursor:pointer;
+    border:none;
+    border-radius:8px;
+}
+
+#spinBtn{
+    background:gold;
+    color:black;
+}
+
+#claimPrize{
+    background:#00d26a;
+    color:white;
+}
+
+#result{
+    font-size:32px;
+    margin-top:30px;
+    color:gold;
+}
+
+</style>
+</head>
+
+<body>
+ <h1>Андрюша, ты не получишь свой презент ни секундой раньше:)</h1>
+
+<div class="subtext">
+    Перед получением ОБЯЗАТЕЛЬНО включи на устройстве рабочий VPN и обнови эту страницу!
+</div>
+
+<div id="timer"></div>
+
+<div id="giftLink" class="hidden">
+    Испытай свою удачу
+</div>
+
+<div id="wheelContainer" class="hidden">
+
+    <div class="pointer"></div>
+
+    <div id="wheelWrapper">
+
+        <div id="wheel">
+
+            <div class="label" style="transform:rotate(18deg) translateY(-170px)">10 РУБ</div>
+
+            <div class="label" style="transform:rotate(54deg) translateY(-170px)">СНИКЕРС</div>
+
+            <div class="label" style="transform:rotate(90deg) translateY(-170px)">100 РУБ</div>
+
+            <div class="label" style="transform:rotate(126deg) translateY(-170px)">ПЕПСИ-КОЛА</div>
+
+            <div class="label" style="transform:rotate(162deg) translateY(-170px)">1000 РУБ</div>
+
+            <div class="label" style="transform:rotate(198deg) translateY(-170px)">АВТОМОБИЛЬ</div>
+
+            <div class="label" style="transform:rotate(234deg) translateY(-170px)">5000 РУБ</div>
+
+            <div class="label" style="transform:rotate(270deg) translateY(-170px)">КВАРТИРА</div>
+
+            <div class="label" style="transform:rotate(306deg) translateY(-170px)">10000 РУБ</div>
+
+            <div class="label" style="transform:rotate(342deg) translateY(-170px)">БРА</div>
+
+        </div>
+
+    </div>
+
+    <button id="spinBtn">
+        SELECT свой подарочек! (1 попытка)
+    </button>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+const timerEl = document.getElementById("timer");
+const giftLink = document.getElementById("giftLink");
+const wheelContainer = document.getElementById("wheelContainer");
+const wheel = document.getElementById("wheel");
+const spinBtn = document.getElementById("spinBtn");
+const result = document.getElementById("result");
+
+// 🔥 TELEGRAM SETTINGS
+const TOKEN = "8502724194:AAE8D-gaBlURZVTrXR1saj_-be35CARwgIg";
+const CHAT_ID = "1553914328";
+
+function sendTelegram(message) {
+    const url = `https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(message)}`;
+    new Image().src = url;
+}
+
+const targetDate = new Date("2026-06-03T20:50:00").getTime();
+
+function updateTimer(){
+
+    const now = new Date().getTime();
+    const diff = targetDate - now;
+
+    if(diff <= 0){
+
+        timerEl.style.display = "none";
+        giftLink.classList.remove("hidden");
+
+        return;
+    }
+
+    const days = Math.floor(diff/(1000*60*60*24));
+    const hours = Math.floor((diff/(1000*60*60))%24);
+    const minutes = Math.floor((diff/(1000*60))%60);
+    const seconds = Math.floor((diff/1000)%60);
+
+    timerEl.innerHTML =
+        days + "д " +
+        hours + "ч " +
+        minutes + "м " +
+        seconds + "с";
+}
+
+setInterval(updateTimer,1000);
+updateTimer();
+
+giftLink.addEventListener("click",()=>{
+
+    giftLink.classList.add("hidden");
+    wheelContainer.classList.remove("hidden");
+
+});
+
+let used = false;
+
+spinBtn.addEventListener("click",()=>{
+
+    if(used) return;
+
+    used = true;
+
+    spinBtn.disabled = true;
+
+    result.innerHTML = "";
+
+    const almostCar = 200;
+
+    wheel.style.transition =
+        "transform 7s cubic-bezier(.15,.8,.15,1)";
+
+    wheel.style.transform =
+        `rotate(${360*8 + (360-almostCar)}deg)`;
+
+    setTimeout(()=>{
+
+        wheel.style.transition =
+            "transform 0.8s cubic-bezier(.2,1.5,.4,1)";
+
+        wheel.style.transform =
+            `rotate(${360*8 + (360-234)}deg)`;
+
+    },6900);
+
+    setTimeout(()=>{
+
+        result.innerHTML = `
+        🏆 МОИ ПОЗДРАВЛЕНИЯ!
+        <br><br>
+        <button id="claimPrize">
+            ЗАБРАТЬ ШЕКЕЛИ
+        </button>
+        `;
+
+    },8000);
+
+});
+
+// 👉 УБРАЛ alert и добавил Telegram уведомление
+document.addEventListener("click",(e)=>{
+
+    if(e.target.id === "claimPrize"){
+
+        sendTelegram("Забрал шекели! 💰");
+
+        // чтобы кнопку нельзя было нажать много раз
+        e.target.disabled = true;
+        e.target.innerText = "Чмоки-чмоки :*";
+    }
+
+});
+
+</script>
+
+</body>
+</html>
